@@ -1,0 +1,126 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.6                                   |
+|   \\  /    A nd           | Web:      http://www.OpenFOAM.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+convertToMeters 1;
+r    0.0064;
+rm  -0.0064;
+gr   0.0238;
+grm -0.0238;
+j    0.0045254;
+jm  -0.0045254;
+gj   0.0168294;
+gjm -0.0168294;
+z 0.01;
+
+nr 20;
+nz 1;
+
+vertices
+(
+    //Block for upper left
+    ($grm 0 0)	//0
+    ($rm 0  0)	//1
+    (0 $r   0)	//2
+    (0 $gr  0)	//3
+
+    ($r 0 0)	//4
+    ($gr 0 0)	//5
+    (0 $rm 0)	//6
+    (0 $grm 0)	//7
+
+
+    ($grm 0 $z) //8
+    ($rm 0 $z)	//9
+    (0 $r $z)	//10
+    (0 $gr $z)	//11
+
+
+    ($r 0 $z)	//12
+    ($gr 0 $z)	//13
+    (0 $rm $z)	//14
+    (0 $grm $z)	//15
+);
+
+blocks
+(
+    hex (0 1 2 3 8 9 10 11) ($nr $nr $nz) simpleGrading (1 1 1)
+    hex (3 2 4 5 11 10 12 13) ($nr $nr $nz) simpleGrading (1 1 1)
+    hex (4 6 7 5 12 14 15 13) ($nr $nr $nz) simpleGrading (1 1 1)
+    hex (6 1 0 7 14 9 8 15) ($nr $nr $nz) simpleGrading (1 1 1)
+);
+
+edges
+(
+    arc 1 2 ( $jm $j 0)
+    arc 3 0 ( $gjm $gj 0 )
+    arc 9 10 ( $jm $j $z)
+    arc 11 8 ( $gjm $gj $z )
+
+    arc 2 4 ($j $j 0)
+    arc 5 3 ($gj $gj 0)
+    arc 10 12 ($j $j $z)
+    arc 13 11 ($gj $gj $z)
+    
+    arc 4 6 ($j $jm 0)
+    arc 5 7 ($gj $gjm 0)
+    arc 12 14 ($j $jm $z)
+    arc 13 15 ($gj $gjm $z)
+
+    arc 6 1 ($jm $jm 0 )
+    arc 7 0 ($gjm $gjm 0)
+
+    arc 14 9 ($jm $jm $z)
+    arc 15 8 ($gjm $gjm $z)
+);
+
+boundary
+(
+    outerWall
+    {
+        type wall;
+        faces
+        (
+	 (0 3 11 8)
+	 (3 5 13 11)
+	 (5 7 15 13)
+	 (7 0 8 15)
+        );
+    }
+    innerWall
+    {
+	type wall;
+	faces
+	(
+	(1 2 10 9)
+	(2 4 12 10)
+	(4 6 14 12)
+	(6 1 9 14)
+	);
+    }
+    frontAndBack
+    {
+        type empty;
+        faces
+        (
+        );
+    }
+);
+
+mergePatchPairs
+(
+);
+
+// ************************************************************************* //

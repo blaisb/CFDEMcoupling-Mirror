@@ -1,0 +1,209 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.4                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+
+    root            "";
+    case            "";
+    instance        "";
+    local           "";
+
+    class           dictionary;
+    object          couplingProperties;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+//===========================================================================//
+// sub-models & settings
+
+modelType Bfull; // A or B
+
+couplingInterval 5;
+
+voidFractionModel divided;//divided;//centre;//bigParticle;//
+
+locateModel engine;//standard;
+
+meshMotionModel noMeshMotion;
+
+regionModel allRegion;
+
+IOModel basicIO; //trackIO; // 
+
+dataExchangeModel twoWayMPI;//twoWayFiles;//oneWayVTK;//
+
+averagingModel dilute;//dilute;//
+
+clockModel off; //standardClock;//
+
+smoothingModel off;
+
+probeModel off;
+
+forceModels
+(
+    DiFeliceDrag
+    //RongDrag
+    //KochHillDrag
+    gradPForce 
+    viscForce 
+    //SchillerNaumannDrag
+    //MeiLift
+    //virtualMassForce
+    Archimedes
+);
+
+momCoupleModels
+(
+    implicitCouple
+);
+
+turbulenceModelType turbulenceProperties;//LESProperties;// //cannot be chanegd 
+
+//===========================================================================//
+// sub-model properties
+
+implicitCoupleProps
+{
+    velFieldName "U";
+    granVelFieldName "Us";
+    voidfractionFieldName "voidfraction";
+}
+
+totalMomentumExchangeProps
+{
+    implicitMomExFieldName "Ksl";
+    explicitMomExFieldName "none";
+    fluidVelFieldName "U";
+    granVelFieldName "Us";
+}
+
+DiFeliceDragProps
+{
+    verbose true;
+    treatForceExplicit false;
+    velFieldName "U";
+    voidfractionFieldName "voidfraction";
+    granVelFieldName "Us";
+    interpolation true;
+}
+
+RongDragProps
+{
+    velFieldName "U";
+    voidfractionFieldName "voidfraction";
+    interpolation true;
+    granVelFieldName "Us";
+    implForceDEM true;
+    implForceDEMaccumulated false;
+}
+
+constantDragProps
+{
+    velFieldName "U";
+    voidfractionFieldName "voidfraction";
+    interpolation;
+}
+
+SchillerNaumannDragProps
+{
+    velFieldName "U";
+}
+
+KochHillDragProps
+{
+    //verbose;
+    velFieldName "U";
+    voidfractionFieldName "voidfraction";
+    granVelocityFieldName "Us";
+    implForceDEM true;
+    implForceDEMaccumulated true;
+    interpolation;
+}
+
+MeiLiftProps
+{
+    velFieldName "U";
+}
+
+gradPForceProps
+{
+    pFieldName "p";
+    treatForceExplicit false;
+    voidfractionFieldName "voidfraction";
+    velocityFieldName "U";
+    interpolation true;
+}
+
+viscForceProps
+{
+    velocityFieldName "U";
+    treatForceExplicit false;
+    interpolation true;
+}
+
+ArchimedesProps
+{
+    gravityFieldName "g";
+}
+
+virtualMassForceProps
+{
+    velFieldName "U";
+}
+
+oneWayVTKProps
+{
+    couplingFilename "vtk_out%4.4d.vtk";
+    maxNumberOfParticles 30000;
+}
+
+twoWayMPIProps
+{
+    liggghtsPath "../DEM/in.liggghts_run";
+}
+
+twoWayFilesProps
+{
+    maxNumberOfParticles 10000;
+    DEMts 0.00001;
+}
+
+centreProps
+{
+    alphaMin 0.30;
+}
+
+dividedProps
+{
+    alphaMin 0.5;
+    scaleUpVol 1.;
+}
+
+bigParticleProps
+{
+    maxCellsPerParticle 1000;
+    alphaMin 0.30;
+    scaleUpVol 1.0;
+}
+
+engineProps
+{
+        treeSearch true;
+}
+
+SRFEngineProps
+{
+        treeSearch true;
+}
+// ************************************************************************* //
