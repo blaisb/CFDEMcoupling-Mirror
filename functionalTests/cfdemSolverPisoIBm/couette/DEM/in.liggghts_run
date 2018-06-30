@@ -1,0 +1,84 @@
+# Couette rotation of a particle between two co-axial cylinders
+# Used to verify the SRF implementation
+#
+### Initialization 
+#Preliminaries
+echo both 
+units		    si
+atom_style	    granular
+atom_modify	    map array
+communicate	    single vel yes
+newton		    off
+processors	    2 1 1 # Parallel decomposition
+
+#read restart file
+read_restart	    ../DEM/post/liggghts.restart
+
+# Neighbor lists
+neighbor	    0.002 bin  #1.1 times radius
+neigh_modify	    every 1 check yes delay 0
+
+### Setup
+
+# Material properties required for new pair styles
+fix		    m1 all property/global youngsModulus peratomtype 5.e6 5e6
+fix		    m2 all property/global poissonsRatio peratomtype 0.25 0.25
+
+# peratomtypepair have to be input as a matrix
+fix		    m3 all property/global coefficientRestitution peratomtypepair 2 0.3 0.3 0.3 0.3
+fix		    m4 all property/global coefficientFriction peratomtypepair 2 0.5 0.5 0.5 0.5
+
+# Timestep
+timestep	    0.000020
+
+# Gravity
+fix		    gravi all gravity 0 vector 1.0 0.0 0.0
+
+# Physics
+pair_style	    gran model hertz tangential history #Hertzian without cohesion but with tangential force
+pair_coeff	    * *
+
+# change the particles density
+set             group all density 2000
+
+### Detailed settings for simulation
+
+#cfd coupling
+fix		    cfd all couple/cfd couple_every 100 mpi
+fix		    cfd2 all couple/cfd/force
+#fix         cfd2 all couple/cfd/force/accumulator RongDrag 1000 1.
+#fix         cfd2 all couple/cfd/force/implicit
+#fix         cfd2 all couple/cfd/force/implicit/accumulated CrankNicolson 0.5
+
+
+variable        vx1 equal vx[1]
+variable        vy1 equal vy[1]
+variable        x1 equal x[1]
+variable        y1 equal y[1]
+variable        time equal step*dt
+
+fix             extra1 all print 10 "${time} ${x1} ${y1} ${vx1} ${vy1}" file particle.txt  screen no
+
+
+#apply nve integration to all particles that are inserted as single particles
+fix		    integr all nve/sphere
+
+#compute total dragforce
+compute		    dragtotal all reduce sum f_dragforce[1] f_dragforce[2] f_dragforce[3]
+
+#screen output
+compute		    1 all erotate/sphere
+thermo_style	    custom step atoms ke # c_dragAcc[1] c_dragAcc[2] c_dragAcc[3]
+thermo		    100
+thermo_modify	    lost ignore norm no
+
+#Fix the boundary conditions
+run		    0 
+change_box	    all boundary f f p 
+
+#insert the first particles so that dump is not empty
+dump		    myDump all stl 1 post/dump_*.stl
+undump		    myDump
+
+run		    1
+

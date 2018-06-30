@@ -1,0 +1,92 @@
+### Couette from Phillips experiments simulation --- Initialization by pouring particles
+
+### This simulation pours particle within a Couette geometry to load for the Phillips shear-induced migration test-case
+### Three STL files are needed : 2 surfaces for the Couette cylinder and a surface from which to load the particles
+### by extrusion
+
+### Bruno Blais : Last modified january 12th 2014
+
+### Initialization 
+#Preliminaries
+echo both 
+units		    si
+atom_style	    granular
+boundary	    f f f # fixed bounary conditions for particles 
+atom_modify	    map array
+communicate	    single vel yes
+newton		    off
+#processors	    2 2 1 # Parallel decomposition
+
+# Declare domain
+region		    domain block -0.025 0.025 -0.025. 0.025 -0.0000005 0.010005 units box
+# 2 particle type are used  to represent the mesh and particles :  1-mesh 2-particles
+create_box	    2 domain 
+
+# Neighbor lists
+neighbor	    0.0020 bin  #1.1 times radius
+neigh_modify	    every 1 check no delay 0
+
+### Setud po# Material properties required for new pair styles
+fix		    m1 all property/global youngsModulus peratomtype 5.e6 5e6
+fix		    m2 all property/global poissonsRatio peratomtype 0.25 0.25
+
+# peratomtypepair have to be input as a matrix
+fix		    m3 all property/global coefficientRestitution peratomtypepair 2 0.1 0.1 0.1 0.1
+fix		    m4 all property/global coefficientFriction peratomtypepair 2 0.5 0.5 0.5 0.5
+
+
+# Timestep
+timestep	    0.00001
+
+# Gravity
+fix		    gravi all gravity 0 vector .0 -.0 -1.0
+
+### Insertion of particles
+
+# Create particle template dans density distribution - 100% of the single particle type
+fix		    pts1 all particletemplate/sphere 15485863 atom_type 1 density constant 2000 radius constant 0.0005 #volume_limit 1e-16
+fix		    pdd1 all particledistribution/discrete 15485867  1 pts1 1.0
+
+#Create a region in which you insert particles
+#region		    nsert block 0.01 0.0110 -0.01 0.01 0.001 0.005 units box 
+
+# Particle rate is in particle per second
+# Insert the particles
+#fix		    ins all insert/rate/region seed 12356 distributiontemplate pdd1 maxattempt 1000 vel constant 0. 0. -0.5 insert_every 1000  overlapcheck yes nparticles 1 massrate 100 region nsert
+#fix     ins all insert/pack seed 100001 distributiontemplate pdd1 vel constant 0. 0. -0.5 insert_every 1000 overlapcheck yes particles_in_region 1 region domain
+
+create_atoms    1 single 0.0105 0. 0.003 units box
+set             group all diameter 0.001 density 2000
+
+# Physics
+pair_style	    gran model hertz tangential history  #Hertzian without cohesion but with tangential force
+pair_coeff	    * *
+
+# Bottom wall
+fix		    bottom all wall/gran model hertz tangential history primitive type 1  zplane -0.000005
+# Top lid
+fix		    top	   all wall/gran model hertz tangential history primitive type 1  zplane 0.0100005
+
+### Detailed settings for simulation
+
+#apply nve integration to all particles that are inserted as single particles
+fix		    integr all nve/sphere
+
+#screen output
+#compute		    1 all erotate/sphere
+thermo_style	    custom step atoms ke vol cpu
+thermo              1000
+thermo_modify	    lost ignore norm no
+
+# Check timestep
+fix		    timecheck all check/timestep/gran 1 0.01 0.01
+run		    1
+unfix       timecheck
+
+#insert the first particles so that dump is not empty
+run		        1
+
+dump            dmp all custom 1000 post/dump_*.liggghts_init id type type x y z ix iy iz vx vy vz fx fy fz omegax omegay omegaz radius 
+
+run             1000 upto
+write_restart   ../DEM/post/liggghts.restart

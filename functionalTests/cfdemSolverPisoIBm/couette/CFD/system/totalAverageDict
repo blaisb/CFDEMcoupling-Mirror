@@ -1,0 +1,43 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.0                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+
+    root	    ".";
+    case 	    "test";
+    instance        "system";
+    local           "";
+
+    class           dictionary;
+    object          thresholdDict;
+}
+
+// ************************************************************************* //
+
+//warning: uncomment functionObjects in controlDict
+
+// name of field to be changed
+fieldName "U";
+
+// field type
+fieldType "vector";
+
+// change field within box(x,y,z)
+geometricRestriction true;
+
+// definition of box (only for geometricRestriction = true)
+Xmin 0.05;
+Xmax 1;
+Ymin 0;
+Ymax 1;
+Zmin 0;
+Zmax 1;
+// ************************************************************************* //

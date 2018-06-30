@@ -1,0 +1,230 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.4                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+
+    root            "";
+    case            "";
+    instance        "";
+    local           "";
+
+    class           dictionary;
+    object          couplingProperties;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+//===========================================================================//
+// sub-models & settings
+
+modelType A; // A or B
+
+couplingInterval 5;
+
+voidFractionModel divided;//centre;//bigParticle;//
+
+locateModel engine;//standard;
+
+meshMotionModel IBMeshMotion;//noMeshMotion;
+
+regionModel allRegion;
+
+IOModel basicIO; //trackIO; // 
+
+probeModel off;
+
+dataExchangeModel twoWayMPI;//twoWayFiles;//oneWayVTK;//
+
+averagingModel dense;//dilute;//
+
+clockModel off; //standardClock;//
+
+smoothingModel  off;//constDiffSmoothing; //
+
+//useDDTvoidfraction;
+
+forceModels
+(
+    DiFeliceDrag
+    //SchillerNaumannDrag
+    //KochHillDrag
+    //MeiLift
+    //virtualMassForce
+    gradPForce
+    viscForce
+    Archimedes
+);
+
+momCoupleModels
+(
+    implicitCouple
+    explicitCouple
+);
+
+turbulenceModelType turbulenceProperties;//RASProperties;//LESProperties;//
+
+//===========================================================================//
+// sub-model properties
+
+IBMeshMotionProps
+{
+    alpha 0.5;                 // relaxation parameter
+    surfaceName
+    (
+        "./constant/triSurface/couette.stl"
+    );
+    enableVolumeMeshCorrection
+    (
+        off
+    );
+    omega
+    (
+        60
+    );
+    axis
+    (
+        (0 0 1.)
+    );
+    centerOfRotation
+    (
+        (0. 0. 0.)
+    );
+    linearVelocity
+    (
+        (0. 0 0)
+    );
+    volumeMesh
+    (
+        0.0001963495408493621
+    );
+    invariant
+    (
+        false
+    );
+    postProcessing true;
+    postProcessingFrequency 0.01;
+}
+
+constDiffSmoothingProps
+{
+    lowerLimit 0.0;
+    upperLimit 1e99;
+    smoothingLength 3e-4;
+} 
+
+implicitCoupleProps
+{
+    velFieldName "U";
+    granVelFieldName "Us";
+    voidfractionFieldName "voidfraction";
+}
+
+explicitCoupleProps
+{
+    velFieldName "U";
+    granVelFieldName "Us";
+    voidfractionFieldName "voidfraction";
+}
+
+DiFeliceDragProps
+{
+    velFieldName "U";
+    voidfractionFieldName "voidfraction";
+    granVelFieldName "Us";
+    interpolation true;
+    treatForceExplicit true;   
+}
+
+SchillerNaumannDragProps
+{
+    velFieldName "U";
+}
+
+KochHillDragProps
+{
+    velFieldName "U";
+    voidfractionFieldName "voidfraction";
+}
+
+MeiLiftProps
+{
+    velFieldName "U";
+}
+
+ArchimedesProps
+{
+    gravityFieldName "g";
+    treatForceExplicit true; 
+}
+
+virtualMassForceProps
+{
+    velFieldName "U";
+}
+
+gradPForceProps
+{
+    pFieldName "p";
+    densityFieldName "rho";
+    voidfractionFieldName "voidfraction";
+    velocityFieldName "U";
+    treatForceExplicit true;
+}
+
+viscForceProps
+{
+    velocityFieldName "U";
+    densityFieldName "rho";
+    treatForceExplicit true;
+}
+
+oneWayVTKProps
+{
+    couplingFilename "vtk_out%4.4d.vtk";
+    maxNumberOfParticles 30000;
+}
+
+twoWayMPIProps
+{
+    liggghtsPath "../DEM/in.liggghts_run";
+}
+
+twoWayFilesProps
+{
+    maxNumberOfParticles 10000;
+    DEMts 0.00001;
+}
+
+centreProps
+{
+    alphaMin 0.30;
+}
+
+dividedProps
+{
+    alphaMin 0.3;
+    scaleUpVol 1.0;
+}
+
+bigParticleProps
+{
+    maxCellsPerParticle 1000;
+    alphaMin 0.30;
+    scaleUpVol 1.0;
+}
+
+engineProps
+{
+    treeSearch true;
+}
+
+// ************************************************************************* //

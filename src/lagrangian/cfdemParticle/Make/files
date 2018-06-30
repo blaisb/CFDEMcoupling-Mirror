@@ -94,6 +94,7 @@ $(locateModels)/locateModel/locateModel.C
 $(locateModels)/locateModel/newLocateModel.C
 $(locateModels)/standardSearch/standardSearch.C
 
+$(meshMotionModels)/IBMeshMotion/IBMeshMotion.C
 $(meshMotionModels)/meshMotionModel/meshMotionModel.C
 $(meshMotionModels)/meshMotionModel/newMeshMotionModel.C
 $(meshMotionModels)/noMeshMotion/noMeshMotion.C
