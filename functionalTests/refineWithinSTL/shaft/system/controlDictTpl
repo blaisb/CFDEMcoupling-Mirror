@@ -1,0 +1,88 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.6                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     cfdemSolverPiso;
+
+startFrom       startTime;
+
+startTime       ££££££££££££££££;
+
+stopAt          endTime;
+
+endTime         ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤;
+
+deltaT          ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦;
+
+writeControl    adjustableRunTime;
+
+writeInterval   ¾¾¾¾¾¾¾¾¾¾¾¾¾¾¾¾;
+
+purgeWrite      0;
+
+writeFormat     binary;
+
+writePrecision  6;
+
+writeCompression compressed;
+
+timeFormat      general;
+
+purgeWrite	0; 
+
+timePrecision   6;
+
+runTimeModifiable no;
+
+adjustTimeStep  no;
+
+maxCo           1;
+
+maxDeltaT       1;
+
+functions
+(
+    forcesInner
+    {
+        type forces;
+        functionObjectLibs ("libforces.so");
+        outputControl runTime;
+        writeInterval 0.01;
+        patches (innerWall);
+        pName "p";
+        UName "Uabs";
+        rhoName rhoInf;
+        log true;
+        rhoInf 1400;
+        CofR (0 0 0);
+    }
+    forcesOuter
+    {
+        type forces;
+        functionObjectLibs ("libforces.so");
+        outputControl runTime;
+        writeInterval 0.01;
+        patches (outerWall);
+        pname "p";
+        UName "Uabs";
+        rhoName rhoInf;
+        log true;
+        rhoInf 1400;
+        CofR (0 0 0);
+    }
+);
+
+// ************************************************************************* //

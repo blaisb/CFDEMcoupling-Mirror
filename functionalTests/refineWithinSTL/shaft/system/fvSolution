@@ -1,0 +1,181 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.6                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    p
+    {
+        solver          GAMG;           // very efficient multigrid solver
+        tolerance       1e-11;          // solver finishes if either absolute
+        relTol          0.001;          // tolerance is reached or the relative
+                                        // tolerance here
+        minIter         3;              // a minimum number of iterations
+        maxIter         100;            // limitation of iterions number
+        smoother        DIC;            // setting for GAMG
+        nPreSweeps      0;              // 1 for pd, set to 0 for all other!
+        nPostSweeps     2;              // 2 is fine
+        nFinestSweeps   2;              // 2 is fine
+        scaleCorrection true;           // true is fine
+        directSolveCoarsestLevel false; // false is fine
+        cacheAgglomeration on;          // on is fine; set to off, if dynamic
+                                        // mesh refinement is used!
+        nCellsInCoarsestLevel 500;      // 500 is fine,
+                                        // otherwise sqrt(number of cells)
+        agglomerator    faceAreaPair;   // faceAreaPair is fine
+        mergeLevels     1;              // 1 is fin
+    }
+
+    pFinal
+    {
+        solver          GAMG;           // very efficient multigrid solver
+        tolerance       1e-11;          // solver finishes if either absolute
+        relTol          0.001;          // tolerance is reached or the relative
+                                        // tolerance here
+        minIter         3;              // a minimum number of iterations
+        maxIter         100;            // limitation of iterions number
+        smoother        DIC;            // setting for GAMG
+        nPreSweeps      0;              // 1 for pd, set to 0 for all other!
+        nPostSweeps     2;              // 2 is fine
+        nFinestSweeps   2;              // 2 is fine
+        scaleCorrection true;           // true is fine
+        directSolveCoarsestLevel false; // false is fine
+        cacheAgglomeration on;          // on is fine; set to off, if dynamic
+                                        // mesh refinement is used!
+        nCellsInCoarsestLevel 500;      // 500 is fine,
+                                        // otherwise sqrt(number of cells)
+        agglomerator    faceAreaPair;   // faceAreaPair is fine
+        mergeLevels     1;              // 1 is fin
+    }
+
+    U
+    {
+        solver          PBiCG;
+        preconditioner  DILU;
+        tolerance       1e-11;
+        relTol          0.001;
+    }
+
+    k
+    {
+        solver          PBiCG;
+        preconditioner  DILU;
+        tolerance       1e-05;
+        relTol          0;
+    }
+
+    epsilon
+    {
+        solver          PBiCG;
+        preconditioner  DILU;
+        tolerance       1e-05;
+        relTol          0;
+    }
+
+    R
+    {
+        solver          PBiCG;
+        preconditioner  DILU;
+        tolerance       1e-05;
+        relTol          0;
+    }
+
+    nuTilda
+    {
+        solver          PBiCG;
+        preconditioner  DILU;
+        tolerance       1e-05;
+        relTol          0;
+    }
+
+    sSmoothField
+    {
+        solver          GAMG;           // very efficient multigrid solver
+        tolerance       1e-08;          // solver finishes if either absolute
+        relTol          0.001;          // tolerance is reached or the relative
+                                        // tolerance here
+        minIter         1;              // a minimum number of iterations
+        maxIter         100;            // limitation of iterions number
+        smoother        DIC;            // setting for GAMG
+        nPreSweeps      0;              // 1 for pd, set to 0 for all other!
+        nPostSweeps     2;              // 2 is fine
+        nFinestSweeps   2;              // 2 is fine
+        scaleCorrection true;           // true is fine
+        directSolveCoarsestLevel false; // false is fine
+        cacheAgglomeration on;          // on is fine; set to off, if dynamic
+                                        // mesh refinement is used!
+        nCellsInCoarsestLevel 500;      // 500 is fine,
+                                        // otherwise sqrt(number of cells)
+        agglomerator    faceAreaPair;   // faceAreaPair is fine
+        mergeLevels     1;              // 1 is fin
+    }
+    
+    vSmoothField
+    {
+        solver          GAMG;           // very efficient multigrid solver
+        tolerance       1e-08;          // solver finishes if either absolute
+        relTol          0.001;          // tolerance is reached or the relative
+                                        // tolerance here
+        minIter         1;              // a minimum number of iterations
+        maxIter         100;            // limitation of iterions number
+        smoother        DIC;            // setting for GAMG
+        nPreSweeps      0;              // 1 for pd, set to 0 for all other!
+        nPostSweeps     2;              // 2 is fine
+        nFinestSweeps   2;              // 2 is fine
+        scaleCorrection true;           // true is fine
+        directSolveCoarsestLevel false; // false is fine
+        cacheAgglomeration on;          // on is fine; set to off, if dynamic
+                                        // mesh refinement is used!
+        nCellsInCoarsestLevel 500;      // 500 is fine,
+                                        // otherwise sqrt(number of cells)
+        agglomerator    faceAreaPair;   // faceAreaPair is fine
+        mergeLevels     1;              // 1 is fin
+    }
+
+    UsNext
+    {
+        solver          GAMG;           // very efficient multigrid solver
+        tolerance       1e-08;          // solver finishes if either absolute
+        relTol          0.001;          // tolerance is reached or the relative
+                                        // tolerance here
+        minIter         1;              // a minimum number of iterations
+        maxIter         100;            // limitation of iterions number
+        smoother        DIC;            // setting for GAMG
+        nPreSweeps      0;              // 1 for pd, set to 0 for all other!
+        nPostSweeps     2;              // 2 is fine
+        nFinestSweeps   2;              // 2 is fine
+        scaleCorrection true;           // true is fine
+        directSolveCoarsestLevel false; // false is fine
+        cacheAgglomeration on;          // on is fine; set to off, if dynamic
+                                        // mesh refinement is used!
+        nCellsInCoarsestLevel 500;      // 500 is fine,
+                                        // otherwise sqrt(number of cells)
+        agglomerator    faceAreaPair;   // faceAreaPair is fine
+        mergeLevels     1;              // 1 is fin
+    }
+
+}
+
+PISO
+{
+    nCorrectors     2;
+    nNonOrthogonalCorrectors 1;
+    pRefCell        0;
+    pRefValue       0;
+}
+
+
+// ************************************************************************* //
