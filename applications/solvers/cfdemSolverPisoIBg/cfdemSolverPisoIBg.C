@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
         {
             particleCloud.smoothingM().smoothenAbsolutField(particleCloud.forceM(0).impParticleForces());
         }
-    
+
         Ksl = particleCloud.momCoupleM(particleCloud.registryM().getProperty("implicitCouple_index")).impMomSource();
         Ksl.correctBoundaryConditions();
 
@@ -127,6 +127,9 @@ int main(int argc, char *argv[])
 
         #include "solverDebugInfo.H"
         particleCloud.clockM().stop("Coupling");
+        particleCloud.clockM().start(33,"IB-STL");
+        particleCloud.meshMotionM().setMotion();
+        particleCloud.clockM().stop("IB-STL");
 
         particleCloud.clockM().start(26,"Flow");
 
@@ -156,9 +159,9 @@ int main(int argc, char *argv[])
                 #endif
                 {
                     if (modelType=="B" || modelType=="Bfull")
-                        solve(UEqn == - fvc::grad(p) + Ksl/rho*Us);
+                        solve(UEqn == - fvc::grad(p) + Ksl/rho*Us+ voidfraction*particleCloud.meshMotionM().inside()* particleCloud.meshMotionM().f());
                     else
-                        solve(UEqn == - voidfraction*fvc::grad(p) + Ksl/rho*Us);
+                        solve(UEqn == - voidfraction*fvc::grad(p) + Ksl/rho*Us+ voidfraction*particleCloud.meshMotionM().inside()* particleCloud.meshMotionM().f());
 
                     fvOptions.correct(U);
                 }
@@ -193,7 +196,7 @@ int main(int argc, char *argv[])
 
                     // Update the fixedFluxPressure BCs to ensure flux consistency
                     #include "fixedFluxPressureHandling.H"
-                    
+
 
                     // Non-orthogonal pressure corrector loop
                     #if defined(version30)
@@ -205,7 +208,10 @@ int main(int argc, char *argv[])
                         // Pressure corrector
                         fvScalarMatrix pEqn
                         (
-                            fvm::laplacian(rUAvoidfraction, p) == fvc::div(voidfractionf*phi) + particleCloud.ddtVoidfraction()
+                            fvm::laplacian(rUAvoidfraction, p) == fvc::div(voidfractionf*phi)
+                                                                  + fvc::div(
+                                                                  rUA*particleCloud.meshMotionM().inside() * particleCloud.meshMotionM().f() )
+                                                                  +particleCloud.ddtVoidfraction()
                         );
                         pEqn.setReference(pRefCell, pRefValue);
 
@@ -237,14 +243,18 @@ int main(int argc, char *argv[])
                     #include "continuityErrorPhiPU.H"
 
                     if (modelType=="B" || modelType=="Bfull")
-                        U -= rUA*fvc::grad(p) - Ksl/rho*Us*rUA;
+                        U -= rUA*fvc::grad(p) - Ksl/rho*Us*rUA - rUA*particleCloud.meshMotionM().inside()*particleCloud.meshMotionM().f()*voidfraction ;
                     else
-                        U -= voidfraction*rUA*fvc::grad(p) - Ksl/rho*Us*rUA;
+                        U -= voidfraction*rUA*fvc::grad(p) - Ksl/rho*Us*rUA - rUA*particleCloud.meshMotionM().inside()*particleCloud.meshMotionM().f()*voidfraction ;
 
                     U.correctBoundaryConditions();
                     fvOptions.correct(U);
 
+                    // Correct IB forcing term
+                    particleCloud.meshMotionM().correctF(U);
+
                 } // end piso loop
+                particleCloud.meshMotionM().postProcessing(rho);
             }
 
             laminarTransport.correct();
