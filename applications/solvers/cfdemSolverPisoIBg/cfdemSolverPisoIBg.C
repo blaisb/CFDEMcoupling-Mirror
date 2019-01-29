@@ -159,9 +159,9 @@ int main(int argc, char *argv[])
                 #endif
                 {
                     if (modelType=="B" || modelType=="Bfull")
-                        solve(UEqn == - fvc::grad(p) + Ksl/rho*Us+ voidfraction*particleCloud.meshMotionM().inside()* particleCloud.meshMotionM().f());
+                        solve(UEqn == - fvc::grad(p) + Ksl/rho*Us+particleCloud.meshMotionM().inside()* particleCloud.meshMotionM().f());
                     else
-                        solve(UEqn == - voidfraction*fvc::grad(p) + Ksl/rho*Us+ voidfraction*particleCloud.meshMotionM().inside()* particleCloud.meshMotionM().f());
+                        solve(UEqn == - voidfraction*fvc::grad(p) + Ksl/rho*Us+ particleCloud.meshMotionM().inside()* particleCloud.meshMotionM().f());
 
                     fvOptions.correct(U);
                 }
@@ -243,9 +243,9 @@ int main(int argc, char *argv[])
                     #include "continuityErrorPhiPU.H"
 
                     if (modelType=="B" || modelType=="Bfull")
-                        U -= rUA*fvc::grad(p) - Ksl/rho*Us*rUA - rUA*particleCloud.meshMotionM().inside()*particleCloud.meshMotionM().f()*voidfraction ;
+                        U -= rUA*fvc::grad(p) - Ksl/rho*Us*rUA - rUA*particleCloud.meshMotionM().inside()*particleCloud.meshMotionM().f() ;
                     else
-                        U -= voidfraction*rUA*fvc::grad(p) - Ksl/rho*Us*rUA - rUA*particleCloud.meshMotionM().inside()*particleCloud.meshMotionM().f()*voidfraction ;
+                        U -= voidfraction*rUA*fvc::grad(p) - Ksl/rho*Us*rUA - rUA*particleCloud.meshMotionM().inside()*particleCloud.meshMotionM().f();
 
                     U.correctBoundaryConditions();
                     fvOptions.correct(U);
