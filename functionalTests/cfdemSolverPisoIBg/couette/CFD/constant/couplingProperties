@@ -177,14 +177,14 @@ gradPForceProps
     densityFieldName "rho";
     voidfractionFieldName "voidfraction";
     velocityFieldName "U";
-    treatForceExplicit true;
+//    treatForceExplicit true;
 }
 
 viscForceProps
 {
     velocityFieldName "U";
     densityFieldName "rho";
-    treatForceExplicit true;
+ //   treatForceExplicit true;
 }
 
 oneWayVTKProps
