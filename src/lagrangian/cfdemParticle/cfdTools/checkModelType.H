@@ -84,7 +84,7 @@
                 found=true;
         }
         if(!found)
-            FatalError <<"gradPForce model not found!\n" << abort(FatalError);
+            Info <<"gradPForce model not found!\n" << endl;
 
         // check if viscForce is used
         found=false;
@@ -94,7 +94,7 @@
                 found=true;
         }
         if(!found)
-            FatalError <<"viscForce model not found!\n" << abort(FatalError);
+            FatalError <<"viscForce model not found!\n" << endl;
     }else if (modelType=="none")
         Warning << "You chose model type -none- you might get erroneous results!" << endl;
     else

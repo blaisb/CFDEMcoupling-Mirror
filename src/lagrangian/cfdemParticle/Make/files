@@ -49,6 +49,7 @@ $(forceModels)/Archimedes/Archimedes.C
 $(forceModels)/ArchimedesIB/ArchimedesIB.C
 $(forceModels)/checkCouplingInterval/checkCouplingInterval.C
 $(forceModels)/DiFeliceDrag/DiFeliceDrag.C
+$(forceModels)/StokesDrag/StokesDrag.C
 $(forceModels)/fieldStore/fieldStore.C
 $(forceModels)/fieldTimeAverage/fieldTimeAverage.C
 $(forceModels)/forceModel/forceModel.C
