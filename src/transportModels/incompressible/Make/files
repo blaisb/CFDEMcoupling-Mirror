@@ -1,0 +1,7 @@
+/*viscosityModels/viscosityModel/viscosityModel.C*/
+/*viscosityModels/viscosityModel/viscosityModelNew.C*/
+/*viscosityModels/polymerViscosity/polymerViscosity.C*/
+viscosityModels/KriegerDoughertyViscosity/KriegerDoughertyViscosity.C
+viscosityModels/BatchelorViscosity/BatchelorViscosity.C
+
+LIB = $(CFDEM_LIB_DIR)/libincompressibleTransportModelsCFDEM
