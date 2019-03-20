@@ -1,0 +1,35 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.2.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      transportProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+transportModel  KriegerDoughertyViscosity;//Newtonian;//
+
+
+nu              nu [ 0 2 -1 0 0 0 0 ] 1e-3;
+
+KriegerDoughertyViscosityCoeffs
+{
+    nu0             nu0 [ 0 2 -1 0 0 0 0 ] 1e-03;
+    nuMax           nuMax [ 0 2 -1 0 0 0 0 ] 1e+03;
+    nuMin           nuMin [ 0 2 -1 0 0 0 0 ] 1e-03;
+    nuBar           nuBar [ 0 0 0 0 0 0 0 ] 2.5;
+    voidfractionMax voidfractionMax [ 0 0 0 0 0 0 0 ] 0.65;
+}
+
+
+
+
+// ************************************************************************* //

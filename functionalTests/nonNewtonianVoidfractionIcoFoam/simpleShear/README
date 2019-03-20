@@ -1,0 +1,9 @@
+This test case is a simple example to verify to non-newtonian 
+implementation in CFDEM
+
+This test case can be simply run by launching "regression.sh" from the
+main directory of the case.
+
+This will carry a regression analysis of the viscosity versus the voidfraction and this will be compared with the analytical model
+
+Perfect fit is obtained even for very coarse mesh since the velocity profile at steady-state is linear.

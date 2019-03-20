@@ -1,0 +1,75 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.2.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     icoFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         0.50;
+
+deltaT          0.00010;
+
+writeControl    adjustableRunTime;
+
+writeInterval   0.100000;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+libs 
+( 
+    "libincompressibleTransportModelsCFDEM.so"
+);
+
+/*
+functions
+(
+    forces
+    {
+        type forces;
+        functionObjectLibs ("libforces.so");
+        outputControl runTime;
+        writeInterval 0.01;
+        patches (top);
+//        pname p;
+//        Uname U;
+        rhoName rhoInf;
+        log true;
+        rhoInf 1000;
+        CofR (0 0 0);
+    }
+
+
+);
+*/
+
+// ************************************************************************* //
