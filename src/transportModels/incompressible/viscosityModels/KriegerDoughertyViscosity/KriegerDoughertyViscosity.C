@@ -63,7 +63,7 @@ Foam::viscosityModels::KriegerDoughertyViscosity::calcNu() const
         min
         (
             nuMax_,
-            nu0_*pow(1.-(1-voidfraction)/voidfractionMax_,-nuBar_*voidfractionMax_)
+            nu0_*pow(max(1.-(1-voidfraction)/voidfractionMax_,1e-6),-nuBar_*voidfractionMax_)
         )
     );
 }

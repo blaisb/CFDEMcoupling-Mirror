@@ -1,0 +1,214 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.4                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+
+    root            "";
+    case            "";
+    instance        "";
+    local           "";
+
+    class           dictionary;
+    object          couplingProperties;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+//===========================================================================//
+// sub-models & settings
+
+modelType A; // A or B
+
+couplingInterval 40;
+
+voidFractionModel divided;//centre;//bigParticle;//
+
+locateModel engine;//standard;
+
+meshMotionModel noMeshMotion;
+
+regionModel allRegion;
+
+IOModel basicIO; //trackIO; // 
+
+dataExchangeModel twoWayMPI;//twoWayFiles;//oneWayVTK;//
+
+averagingModel dense;//dilute;//
+
+clockModel standardClock;//off; //
+
+smoothingModel off;
+
+probeModel off;
+
+forceModels
+(
+    DEMbasedDrag
+    gradPForce 
+    viscForce 
+    //SchillerNaumannDrag
+    //KochHillDrag
+    //MeiLift
+    //virtualMassForce
+    Archimedes
+);
+
+momCoupleModels
+(
+    explicitCouple
+);
+
+turbulenceModelType turbulenceProperties;//RASProperties;//LESProperties;// //cannot be chanegd 
+
+//===========================================================================//
+// sub-model properties
+
+totalMomentumExchangeProps
+{
+    implicitMomExFieldName "Ksl";
+    explicitMomExFieldName "none";
+    fluidVelFieldName "U";
+    granVelFieldName "Us";
+    densityFieldName "rho";
+}
+
+implicitCoupleProps
+{
+    velFieldName "U";
+    granVelFieldName "Us";
+    voidfractionFieldName "voidfraction";
+}
+
+hybridCoupleProps
+{
+    velFieldName "U";
+    granVelFieldName "Us";
+    voidfractionFieldName "voidfraction";
+}
+
+explicitCoupleProps
+{
+    velFieldName "U";
+    granVelFieldName "Us";
+    voidfractionFieldName "voidfraction";
+}
+
+DiFeliceDragProps
+{
+    velFieldName "U";
+    densityFieldName "rho";
+    voidfractionFieldName "voidfraction";
+    interpolation true;
+    granVelFieldName "Us";
+    treatForceExplicit true;
+}
+DEMbasedDragProps
+{
+    velFieldName "U";
+    densityFieldName "rho";
+    granVelFieldName "Us";
+    voidfractionFieldName "voidfraction";
+    interpolation true;
+    implForceDEM true;
+    implForceDEMaccumulated true;
+    treatForceExplicit true;
+    verbose true;
+}
+SchillerNaumannDragProps
+{
+    velFieldName "U";
+    densityFieldName "rho";
+}
+
+KochHillDragProps
+{
+    velFieldName "U";
+    densityFieldName "rho";
+    voidfractionFieldName "voidfraction";
+}
+
+MeiLiftProps
+{
+    velFieldName "U";
+    densityFieldName "rho";
+}
+
+gradPForceProps
+{
+    pFieldName "p";
+    densityFieldName "rho";
+    voidfractionFieldName "voidfraction";
+    velocityFieldName "U";
+    interpolation;
+}
+
+viscForceProps
+{
+    velocityFieldName "U";
+    densityFieldName "rho";
+    interpolation;
+}
+
+ArchimedesProps
+{
+    densityFieldName "rho";
+    gravityFieldName "g";
+    treatForceDEM true;
+}
+
+virtualMassForceProps
+{
+    velFieldName "U";
+    densityFieldName "rho";
+}
+
+oneWayVTKProps
+{
+    couplingFilename "vtk_out%4.4d.vtk";
+    maxNumberOfParticles 30000;
+}
+
+twoWayMPIProps
+{
+    liggghtsPath "../DEM/in.liggghts_resume";
+}
+
+twoWayFilesProps
+{
+    maxNumberOfParticles 10000;
+    DEMts 0.00001;
+}
+
+centreProps
+{
+    alphaMin 0.30;
+}
+
+dividedProps
+{
+    alphaMin 0.3;
+    scaleUpVol 1.0;
+}
+
+bigParticleProps
+{
+    maxCellsPerParticle 1000;
+    alphaMin 0.30;
+    scaleUpVol 1.0;
+}
+
+engineProps
+{
+        treeSearch true;
+}
+
+// ************************************************************************* //

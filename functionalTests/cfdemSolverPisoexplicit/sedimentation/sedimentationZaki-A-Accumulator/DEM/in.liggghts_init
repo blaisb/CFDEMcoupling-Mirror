@@ -1,0 +1,65 @@
+# Pour granular particles into chute container, then induce flow
+echo both 
+atom_style	granular
+atom_modify	map array
+communicate	single vel yes
+
+boundary	f f f
+newton		off
+
+units		si
+
+region		reg block 0. 0.05 0. 0.05 0. 0.23 units box
+create_box	1 reg
+
+neighbor	0.005000 bin #1.1 times radius
+neigh_modify	delay 0
+
+
+#Material properties required for new pair styles
+
+fix 		m1 all property/global youngsModulus peratomtype 5.e6
+fix 		m2 all property/global poissonsRatio peratomtype 0.45
+fix 		m3 all property/global coefficientRestitution peratomtypepair 1 0.3
+fix 		m4 all property/global coefficientFriction peratomtypepair 1 0.5
+
+#pair style
+pair_style 	gran model hertz tangential history #Hertzian without cohesion but with tangential force
+pair_coeff	* *
+
+#timestep, gravity
+timestep	0.000001
+fix		gravi all gravity 0 vector 0.0 0.0 -10.0
+
+#walls
+fix			zwalls1 all wall/gran model hertz tangential history   primitive type 1  zplane 0.0
+fix			zwalls2 all wall/gran model hertz tangential history   primitive type 1  zplane 0.23
+fix			xwalls1 all wall/gran model hertz tangential history   primitive type 1  xplane 0.0
+fix			xwalls2 all wall/gran model hertz tangential history   primitive type 1  xplane 0.05
+fix			ywalls1 all wall/gran model hertz tangential history   primitive type 1  yplane 0.0
+fix			ywalls2 all wall/gran model hertz tangential history   primitive type 1  yplane 0.05
+
+
+#particle distributions and insertion
+#region		bc cylinder z 0.005 0.005 0.5 0. 0.18 units box
+region		    bc block 0. 0.05 0. 0.05 0. 0.23 units box 
+fix		    pts1 all particletemplate/sphere 15485863 atom_type 1 density constant 160 radius constant 0.0025
+fix		    pdd1 all particledistribution/discrete 32452843  1 pts1 1.0
+
+fix		ins all insert/pack seed 15485867 distributiontemplate pdd1  maxattempt 100000 vel constant 0. 0. 0. insert_every once overlapcheck yes all_in yes particles_in_region 1 region bc
+
+#apply nve integration to all particles that are inserted as single particles
+fix		integr all nve/sphere
+
+#screen output
+compute		1 all erotate/sphere
+thermo_style	custom step atoms ke c_1 vol
+thermo		1000
+thermo_modify	lost ignore norm no
+
+#insert the first particles so that dump is not empty
+run		1
+dump		dmp all custom 1 post/dump.liggghts_init id type type x y z ix iy iz vx vy vz fx fy fz omegax omegay omegaz radius 
+
+run		1 upto
+write_restart 	liggghts.restart

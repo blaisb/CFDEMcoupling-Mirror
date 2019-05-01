@@ -60,6 +60,7 @@ $(forceModels)/interface/interface.C
 $(forceModels)/KochHillDrag/KochHillDrag.C
 $(forceModels)/LaEuScalarTemp/LaEuScalarTemp.C
 $(forceModels)/MeiLift/MeiLift.C
+$(forceModels)/DEMbasedDrag/DEMbasedDrag.C
 $(forceModels)/noDrag/noDrag.C
 $(forceModels)/particleCellVolume/particleCellVolume.C
 $(forceModels)/particleVolume/particleVolume.C
