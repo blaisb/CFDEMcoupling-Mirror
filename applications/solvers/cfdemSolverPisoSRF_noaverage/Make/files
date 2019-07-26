@@ -1,0 +1,3 @@
+cfdemSolverPisoSRF_noaverage.C
+
+EXE=$(CFDEM_APP_DIR)/cfdemSolverPisoSRF_noaverage
