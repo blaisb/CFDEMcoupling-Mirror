@@ -25,7 +25,7 @@
                 found=true;
         }
         if(!found)
-            FatalError <<"gradPForce model not found!\n" << abort(FatalError);
+            FatalError <<"gradPForce model not found!\n" << endl;
 
         // check if viscForce is used
         found=false;
@@ -35,7 +35,7 @@
                 found=true;
         }
         if(!found)
-            FatalError <<"viscForce model not found!\n" << abort(FatalError);
+            FatalError <<"viscForce model not found!\n" << endl;
 
     }else if(modelType=="B"){
         Info << "solving volume averaged Navier Stokes equations of type B\n"<< endl;
@@ -48,7 +48,7 @@
                 found=true;
         }
         if(!found)
-            FatalError <<"Archimedes model not found!\n" << abort(FatalError);
+            FatalError <<"Archimedes model not found!\n" << endl;
 
 
 
