@@ -2,40 +2,39 @@
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
 |  \\    /   O peration     | Version:  1.6                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|   \\  /    A nd           | Web:      http://www.OpenFOAM.org               |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
     format      ascii;
-    class       dictionary;
-    location    "constant";
-    object      dynamicMeshDict;
+    class       volScalarField;
+    object      p;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dynamicFvMesh  dynamicRefineFvMesh;//dynamicRefineFvMesh;//staticFvMesh;//
+dimensions      [0 2 -2 0 0 0 0];
 
+internalField   uniform 100000;
 
-
-dynamicRefineFvMeshCoeffs
+boundaryField
 {
-    refineInterval  1;//refine every refineInterval timesteps
-    field           interFace;
-    lowerRefineLevel .0001;
-    upperRefineLevel 0.99;
-    unrefineLevel   1;
-    nBufferLayers   1;
-    maxRefinement   3;//maximum refinement level (starts from 0)
-    maxCells        500000;
-    correctFluxes
-    (
-        (phi    U)
-        (phi_0  U)
-    );
-    dumpLevel       false;
-}
+    walls
+    {
+        type            zeroGradient;
+    }
 
+    frontAndBack    
+    {
+        type            empty;
+    }
+    
+    cylindro
+    {
+	type zeroGradient;
+    }
+
+}
 
 // ************************************************************************* //

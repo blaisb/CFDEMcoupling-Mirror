@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
         // Loop over the surfaces
         for (int i=0 ; i < nSurf ; i++)
         {
-            Info << "Mesh - " << surfaceName[i] << " - is over" << endl;
+            Info << "Mesh - " << surfaceName[i] << endl;
 
             // Search operator
             querySurf.reset(new triSurfaceSearch(surf[i]));
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
                 // Add the body weight due to the cell centroid
                 if(cellInside[cellI])
                 {
-                    body[cellI] += vertices.size();
+                   body[cellI] += vertices.size();
                 }
 
                 // Rescale since half weight is vertices and half centroid
