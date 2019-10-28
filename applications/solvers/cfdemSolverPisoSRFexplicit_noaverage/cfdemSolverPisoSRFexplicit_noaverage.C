@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
         f.correctBoundaryConditions();
 
         surfaceScalarField voidfractionf = fvc::interpolate(voidfraction);
-        phi = voidfractionf*phiByVoidfraction;
+        phi = 1*phiByVoidfraction;
 
         //Force Checks
         //#include "forceCheckIm.H"
@@ -144,11 +144,11 @@ int main(int argc, char *argv[])
                 // Momentum predictor
                 fvVectorMatrix UEqn
                 (
-                    fvm::ddt(voidfraction,U) - fvm::Sp(fvc::ddt(voidfraction),U)
+                    fvm::ddt(U) 
                   + fvm::div(phi,U) - fvm::Sp(fvc::div(phi),U)
 //                + turbulence->divDevReff(U)
-                  + particleCloud.divVoidfractionTau(U, voidfraction)
-                  + voidfraction*(SRF->Su())
+                  + turbulence->divDevReff(U)
+                  + (SRF->Su())
                   ==
                   fvOptions(U)
                 );
@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
                     if (modelType=="B" || modelType=="Bfull")
                         solve(UEqn == - fvc::grad(p) - f/rho);
                     else
-                        solve(UEqn == - voidfraction*fvc::grad(p) - f/rho);
+                        solve(UEqn == - 1*fvc::grad(p) - f/rho);
 
                     fvOptions.correct(U);
                 }
@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
                     volScalarField rUA = 1.0/UEqn.A();
 
                     surfaceScalarField rUAf("(1|A(U))", fvc::interpolate(rUA));
-                    volScalarField rUAvoidfraction("(voidfraction2|A(U))",rUA*voidfraction);
+                    volScalarField rUAvoidfraction("(voidfraction2|A(U))",rUA*1);
                     surfaceScalarField rUAfvoidfraction("(voidfraction2|A(U)F)", fvc::interpolate(rUAvoidfraction));
 
                     U = rUA*UEqn.H();
@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
                     phi += rUAf*(fvc::interpolate(f/rho) & mesh.Sf());
 
                     if (modelType=="A")
-                        rUAvoidfraction = volScalarField("(voidfraction2|A(U))",rUA*voidfraction*voidfraction);
+                        rUAvoidfraction = volScalarField("(voidfraction2|A(U))",rUA*1*1);
 
                     // Update the fixedFluxPressure BCs to ensure flux consistency
                     #include "fixedFluxPressureHandling.H"
@@ -212,7 +212,7 @@ int main(int argc, char *argv[])
                         // Pressure corrector
                         fvScalarMatrix pEqn
                         (
-                            fvm::laplacian(rUAvoidfraction, p) == fvc::div(voidfractionf*phi) + particleCloud.ddtVoidfraction()
+                            fvm::laplacian(rUAvoidfraction, p) == fvc::div(1*phi) + particleCloud.ddtVoidfraction()
                         );
                         pEqn.setReference(pRefCell, pRefValue);
 
@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
                             pEqn.solve(mesh.solver(p.select(piso.finalInnerIter())));
                             if (piso.finalNonOrthogonalIter())
                             {
-                                phiByVoidfraction = phi - pEqn.flux()/voidfractionf;
+                                phiByVoidfraction = phi - pEqn.flux()/1;
                             }
                         #else
                             if( corr == nCorr-1 && nonOrth == nNonOrthCorr )
@@ -234,19 +234,19 @@ int main(int argc, char *argv[])
 
                             if (nonOrth == nNonOrthCorr)
                             {
-                                phiByVoidfraction = phi - pEqn.flux()/voidfractionf;
+                                phiByVoidfraction = phi - pEqn.flux()/1;
                             }
                         #endif
 
                     } // end non-orthogonal corrector loop
 
-                    phi = voidfractionf*phiByVoidfraction;
+                    phi = 1*phiByVoidfraction;
                     #include "continuityErrorPhiPU.H"
 
                     if (modelType=="B" || modelType=="Bfull")
                         U -= rUA*fvc::grad(p) + f/rho*rUA;
                     else
-                        U -= voidfraction*rUA*fvc::grad(p) + f/rho*rUA;
+                        U -= 1*rUA*fvc::grad(p) + f/rho*rUA;
 
                     U.correctBoundaryConditions();
                     fvOptions.correct(U);

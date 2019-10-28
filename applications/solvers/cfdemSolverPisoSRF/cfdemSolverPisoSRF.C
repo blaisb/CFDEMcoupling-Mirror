@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
                   + fvm::div(phi,U) - fvm::Sp(fvc::div(phi),U)
 //                + turbulence->divDevReff(U)
                   + particleCloud.divVoidfractionTau(U, voidfraction)
-                  + SRF->Su()
+                  +  voidfraction*(SRF->Su())
                   ==
                   - fvm::Sp(Ksl/rho,U)
                   + fvOptions(U)
