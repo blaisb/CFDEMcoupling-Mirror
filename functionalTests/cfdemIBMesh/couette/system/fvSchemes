@@ -10,31 +10,53 @@ FoamFile
     version     2.0;
     format      ascii;
     class       dictionary;
-    location    "constant";
-    object      dynamicMeshDict;
+    location    "system";
+    object      fvSchemes;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dynamicFvMesh  dynamicRefineFvMesh;//dynamicRefineFvMesh;//staticFvMesh;//
-
-
-
-dynamicRefineFvMeshCoeffs
+ddtSchemes
 {
-    refineInterval  1;//refine every refineInterval timesteps
-    field           interFace;
-    lowerRefineLevel .0001;
-    upperRefineLevel 0.99;
-    unrefineLevel   1;
-    nBufferLayers   1;
-    maxRefinement   3;//maximum refinement level (starts from 0)
-    maxCells        500000;
-    correctFluxes
-    (
-        (phi    U)
-        (phi_0  U)
-    );
-    dumpLevel       false;
+    default         Euler;
+}
+
+gradSchemes
+{
+    default         Gauss linear;
+    grad(p)         Gauss linear;
+}
+
+divSchemes
+{
+    default         Gauss linear;
+    div(phi,U)      Gauss linear;
+    div(U)          Gauss linear;
+}
+
+laplacianSchemes
+{
+    default         none;
+    laplacian(nuEff,U) Gauss linear corrected;
+    laplacian((1|A(U)),p) Gauss linear corrected;
+    laplacian(phiIB) Gauss linear corrected;
+    laplacian(U) Gauss linear corrected;
+}
+
+interpolationSchemes
+{
+    default         linear;
+    interpolate(HbyA) linear;
+}
+
+snGradSchemes
+{
+    default         corrected;
+}
+
+fluxRequired
+{
+    default         no;
+    p               ;
 }
 
 

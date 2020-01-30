@@ -1,7 +1,7 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  1.6                                   |
+|  \\    /   O peration     | Version:  2.0                                   |
 |   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
@@ -11,31 +11,55 @@ FoamFile
     format      ascii;
     class       dictionary;
     location    "constant";
-    object      dynamicMeshDict;
+    object      immersedBoundaryProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dynamicFvMesh  dynamicRefineFvMesh;//dynamicRefineFvMesh;//staticFvMesh;//
+objectType "mesh";
+alpha 0.5;                 // relaxation parameter
+logInterval 10;
+enableVolumeMeshCorrection
+(
+off
+);
 
+omega
+(
+1.
+);
 
+axis
+(
+ (0 0 1.)
+);
 
-dynamicRefineFvMeshCoeffs
-{
-    refineInterval  1;//refine every refineInterval timesteps
-    field           interFace;
-    lowerRefineLevel .0001;
-    upperRefineLevel 0.99;
-    unrefineLevel   1;
-    nBufferLayers   1;
-    maxRefinement   3;//maximum refinement level (starts from 0)
-    maxCells        500000;
-    correctFluxes
-    (
-        (phi    U)
-        (phi_0  U)
-    );
-    dumpLevel       false;
-}
+centerOfRotation
+(
+ (0 0. 0)
+);
 
+linearVelocity
+(
+(0. 0. 0.)
+);
 
+volumeMesh
+(
+0.0001963495408493621
+);
+
+surfaceName
+(
+    "./constant/triSurface/couette.stl"
+);
+
+invariant
+(
+false
+);
+
+enableVolumeMeshCorrection
+(
+true
+);
 // ************************************************************************* //

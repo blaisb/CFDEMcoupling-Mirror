@@ -10,31 +10,50 @@ FoamFile
     version     2.0;
     format      ascii;
     class       dictionary;
-    location    "constant";
-    object      dynamicMeshDict;
+    location    "system";
+    object      fvSolution;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dynamicFvMesh  dynamicRefineFvMesh;//dynamicRefineFvMesh;//staticFvMesh;//
-
-
-
-dynamicRefineFvMeshCoeffs
+solvers
 {
-    refineInterval  1;//refine every refineInterval timesteps
-    field           interFace;
-    lowerRefineLevel .0001;
-    upperRefineLevel 0.99;
-    unrefineLevel   1;
-    nBufferLayers   1;
-    maxRefinement   3;//maximum refinement level (starts from 0)
-    maxCells        500000;
-    correctFluxes
-    (
-        (phi    U)
-        (phi_0  U)
-    );
-    dumpLevel       false;
+    p
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       1e-12;
+        relTol          0.1;
+    }
+    pFinal
+    {
+        $p;
+        relTol          1e-5;
+    }
+
+    U
+    {
+        solver          PBiCG;
+        preconditioner  DILU;
+        tolerance       1e-12;
+        relTol          0;
+    }
+
+    phiIB
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       1e-12;
+        relTol          0;
+    }
+
+}
+
+PISO
+{
+    nCorrectors     10;
+    nNonOrthogonalCorrectors 1;
+    pRefCell        0;
+    pRefValue       0;
 }
 
 
